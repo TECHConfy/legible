@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Legible – Plain Language Explainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#F9F6F0;--card:#FFFFFF;--text:#1A1A1A;--muted:#6B6B6B;
+    --accent:#1A3C34;--accent-light:#E8F2EE;--accent-mid:#2E6B5A;
+    --border:#E2DDD6;--pill-bg:#F0EBE3;
+    --serif:'Instrument Serif',Georgia,serif;
+    --sans:'DM Sans',sans-serif;
+  }
+  body{background:var(--bg);font-family:var(--sans);color:var(--text);min-height:100vh;}
+
+  .hero{padding:3rem 2rem 2rem;text-align:center;border-bottom:1px solid var(--border);background:var(--card);}
+  .hero-badge{display:inline-block;background:var(--accent-light);color:var(--accent-mid);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;border-radius:100px;margin-bottom:1.2rem;}
+  .hero h1{font-family:var(--serif);font-size:clamp(2.2rem,5vw,3.4rem);font-weight:400;line-height:1.15;margin-bottom:.75rem;}
+  .hero h1 em{font-style:italic;color:var(--accent-mid);}
+  .hero p{font-size:1rem;color:var(--muted);max-width:480px;margin:0 auto 2rem;line-height:1.6;}
+
+  .pill-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:2rem;}
+  .pill{background:var(--pill-bg);border:1px solid var(--border);border-radius:100px;padding:6px 16px;font-size:13px;color:var(--muted);cursor:pointer;transition:all .2s;font-family:var(--sans);}
+  .pill:hover,.pill.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+  .main{padding:2rem;max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:1.5rem;}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;}
+  .card-label{font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;}
+  textarea{width:100%;min-height:160px;border:1px solid var(--border);border-radius:10px;padding:1rem;font-size:14px;font-family:var(--sans);color:var(--text);background:var(--bg);resize:vertical;outline:none;transition:border .2s;line-height:1.7;}
+  textarea:focus{border-color:var(--accent-mid);}
+  textarea::placeholder{color:#B0A99F;}
+
+  .row{display:flex;gap:12px;align-items:center;margin-top:1rem;flex-wrap:wrap;}
+  select{flex:1;min-width:160px;border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;font-family:var(--sans);color:var(--text);background:var(--card);outline:none;cursor:pointer;}
+
+  .btn{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:11px 28px;font-size:14px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;white-space:nowrap;}
+  .btn:hover{background:var(--accent-mid);}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:10px;padding:10px 18px;font-size:13px;font-family:var(--sans);cursor:pointer;transition:all .2s;}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+
+  .output-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:none;}
+  .output-card.visible{display:block;}
+  .output-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--accent-light);}
+  .output-header-left{display:flex;align-items:center;gap:10px;}
+  .output-dot{width:10px;height:10px;border-radius:50%;background:var(--accent-mid);}
+  .output-title{font-size:13px;font-weight:500;color:var(--accent);letter-spacing:.03em;}
+  .output-body{padding:1.5rem;font-size:15px;line-height:1.8;color:var(--text);white-space:pre-wrap;font-family:var(--sans);}
+  .output-body.loading{color:var(--muted);font-style:italic;display:flex;align-items:center;gap:10px;}
+  .dot-loader{display:flex;gap:4px;}
+  .dot-loader span{width:6px;height:6px;border-radius:50%;background:var(--accent-mid);animation:bounce .9s infinite;}
+  .dot-loader span:nth-child(2){animation-delay:.2s;}
+  .dot-loader span:nth-child(3){animation-delay:.4s;}
+  @keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+
+  .score-row{display:flex;gap:10px;flex-wrap:wrap;padding:1rem 1.5rem;border-top:1px solid var(--border);}
+  .score-badge{display:flex;flex-direction:column;align-items:center;background:var(--pill-bg);border:1px solid var(--border);border-radius:10px;padding:8px 16px;min-width:100px;}
+  .score-val{font-size:20px;font-weight:500;color:var(--accent);}
+  .score-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+
+  .examples-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:1rem;}
+  .example-tile{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;cursor:pointer;transition:all .2s;}
+  .example-tile:hover{border-color:var(--accent-mid);background:var(--accent-light);}
+  .example-tile h4{font-size:13px;font-weight:500;margin-bottom:4px;}
+  .example-tile p{font-size:12px;color:var(--muted);line-height:1.5;}
+
+  .copy-btn{background:transparent;border:1px solid var(--border);border-radius:7px;padding:5px 12px;font-size:12px;font-family:var(--sans);color:var(--muted);cursor:pointer;transition:all .2s;}
+  .copy-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .char-count{font-size:12px;color:var(--muted);margin-top:6px;text-align:right;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">✦ Powered by Claude AI</div>
+  <h1>Understand <em>any</em> document,<br>in plain language.</h1>
+  <p>Paste confusing legal, medical, or government text — get a clear, simple explanation in seconds.</p>
+  <div class="pill-row">
+    <button class="pill active" onclick="setMode(this,'explain')">📄 Explain it</button>
+    <button class="pill" onclick="setMode(this,'summarize')">✂️ Summarize</button>
+    <button class="pill" onclick="setMode(this,'rights')">⚖️ What are my rights?</button>
+    <button class="pill" onclick="setMode(this,'risks')">⚠️ What are the risks?</button>
+    <button class="pill" onclick="setMode(this,'eli5')">🧒 Explain like I'm 12</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="card">
+    <div class="card-label">📋 Paste your document or text</div>
+    <textarea id="inputText" placeholder="Paste any confusing text here — tenancy agreement, medical report, terms & conditions, government letter…"></textarea>
+    <div class="char-count" id="charCount">0 characters</div>
+    <div class="row">
+      <select id="langSelect">
+        <option value="english">Output: English</option>
+        <option value="Nigerian Pidgin">Output: Nigerian Pidgin</option>
+        <option value="Yoruba">Output: Yoruba (simple)</option>
+        <option value="Igbo">Output: Igbo (simple)</option>
+        <option value="Hausa">Output: Hausa (simple)</option>
+      </select>
+      <button class="btn-ghost" onclick="loadExample()">Load example</button>
+      <button class="btn" id="explainBtn" onclick="explain()">
+        <span id="btnText">Explain this</span>
+        <span>→</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="exampleSection">
+    <div class="card-label" style="margin-bottom:.5rem">💡 Try an example</div>
+    <div class="examples-grid">
+      <div class="example-tile" onclick="useExample('tenancy')"><h4>🏠 Tenancy Agreement</h4><p>Understand what you're signing before moving in</p></div>
+      <div class="example-tile" onclick="useExample('medical')"><h4>🩺 Medical Report</h4><p>Decode doctor's notes and diagnoses</p></div>
+      <div class="example-tile" onclick="useExample('terms')"><h4>📱 Terms & Conditions</h4><p>Find out what an app can do with your data</p></div>
+      <div class="example-tile" onclick="useExample('government')"><h4>🏛️ Government Letter</h4><p>Understand official notices without a lawyer</p></div>
+    </div>
+  </div>
+
+  <div class="output-card" id="outputCard">
+    <div class="output-header">
+      <div class="output-header-left">
+        <div class="output-dot"></div>
+        <div class="output-title" id="outputLabel">Plain Language Explanation</div>
+      </div>
+      <button class="copy-btn" onclick="copyOutput()">Copy</button>
+    </div>
+    <div class="output-body" id="outputBody"></div>
+    <div class="score-row" id="scoreRow" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+let currentMode = 'explain';
+
+const examples = {
+  tenancy: `TENANCY AGREEMENT\n\nThe Tenant hereby covenants with the Landlord that the Tenant will not without the prior written consent of the Landlord (such consent not to be unreasonably withheld) make or permit to be made any alterations or additions to the demised premises or any part thereof and in particular (but without limiting the generality of the foregoing) will not erect any new buildings or structures on the demised premises.`,
+  medical: `CLINICAL FINDINGS: Patient presents with pyrexia of unknown origin, bilateral cervical lymphadenopathy, and hepatosplenomegaly. Haematological investigations reveal leucocytosis with neutrophilia. Chest radiograph demonstrates bilateral hilar lymphadenopathy. Differential diagnoses include infectious mononucleosis, lymphoma, and sarcoidosis. Recommend urgent bone marrow trephine biopsy and CT thorax/abdomen/pelvis.`,
+  terms: `By accessing or using our Service, you agree to be bound by these Terms. You grant us a non-exclusive, worldwide, royalty-free, sublicensable, and transferable license to use, reproduce, modify, adapt, publish, translate, create derivative works from, distribute, publicly perform, and publicly display your Content in connection with operating and providing the Service and Content to you and to other Users.`,
+  government: `NOTICE OF ASSESSMENT — INCOME TAX ACT\n\nPursuant to Section 68 of the Income Tax Act, this constitutes formal notice of your tax liability for the assessment period. The Commissioner of Taxation has made a determination that the taxable income as assessed is subject to primary tax and surcharge levies as stipulated herein. Failure to remit payment or lodge an objection within the prescribed 60-day period may result in enforcement action including garnishment of wages and/or seizure of assets.`
+};
+
+const modePrompts = { explain:"explain", summarize:"summarize", rights:"rights", risks:"risks", eli5:"eli5" };
+const modeLabels = { explain:"Plain Language Explanation", summarize:"Summary", rights:"Your Rights", risks:"Key Risks & Obligations", eli5:"Simple Explanation" };
+
+function setMode(btn, mode) {
+  currentMode = mode;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('btnText').textContent = btn.textContent.slice(2).trim();
+}
+
+function useExample(key) {
+  document.getElementById('inputText').value = examples[key];
+  updateCount();
+  document.getElementById('exampleSection').style.display = 'none';
+}
+
+function loadExample() {
+  const keys = Object.keys(examples);
+  useExample(keys[Math.floor(Math.random() * keys.length)]);
+}
+
+function updateCount() {
+  document.getElementById('charCount').textContent = document.getElementById('inputText').value.length.toLocaleString() + ' characters';
+}
+document.getElementById('inputText').addEventListener('input', updateCount);
+
+function copyOutput() {
+  navigator.clipboard.writeText(document.getElementById('outputBody').textContent).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+
+async function explain() {
+  const text = document.getElementById('inputText').value.trim();
+  if (!text) {
+    document.getElementById('inputText').style.borderColor = '#E24B4A';
+    setTimeout(() => document.getElementById('inputText').style.borderColor = '', 1500);
+    return;
+  }
+  const btn = document.getElementById('explainBtn');
+  btn.disabled = true;
+
+  const outputCard = document.getElementById('outputCard');
+  const outputBody = document.getElementById('outputBody');
+  const scoreRow = document.getElementById('scoreRow');
+
+  document.getElementById('outputLabel').textContent = modeLabels[currentMode];
+  outputCard.classList.add('visible');
+  outputCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  scoreRow.style.display = 'none';
+  outputBody.className = 'output-body loading';
+  outputBody.innerHTML = '<div class="dot-loader"><span></span><span></span><span></span></div>&nbsp; Analyzing your document…';
+
+  try {
+    const res = await fetch('/api/explain', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        text,
+        mode: currentMode,
+        language: document.getElementById('langSelect').value
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    const full = data.result;
+    const scoreMatch = full.match(/READABILITY_SCORE:\s*(\d+)/);
+    const wordsMatch = full.match(/COMPLEXITY_WORDS:\s*(\d+)/);
+    const pointsMatch = full.match(/KEY_POINTS:\s*(\d+)/);
+
+    const clean = full
+      .replace(/READABILITY_SCORE:.*$/m, '')
+      .replace(/COMPLEXITY_WORDS:.*$/m, '')
+      .replace(/KEY_POINTS:.*$/m, '')
+      .trim();
+
+    outputBody.className = 'output-body';
+    outputBody.textContent = clean;
+
+    if (scoreMatch || wordsMatch || pointsMatch) {
+      scoreRow.style.display = 'flex';
+      scoreRow.innerHTML = '';
+      if (scoreMatch) scoreRow.innerHTML += `<div class="score-badge"><div class="score-val">${scoreMatch[1]}/10</div><div class="score-lbl">Complexity</div></div>`;
+      if (wordsMatch) scoreRow.innerHTML += `<div class="score-badge"><div class="score-val">${wordsMatch[1]}</div><div class="score-lbl">Terms simplified</div></div>`;
+      if (pointsMatch) scoreRow.innerHTML += `<div class="score-badge"><div class="score-val">${pointsMatch[1]}</div><div class="score-lbl">Key points</div></div>`;
+    }
+  } catch (e) {
+    outputBody.className = 'output-body';
+    outputBody.textContent = 'Something went wrong: ' + e.message;
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
