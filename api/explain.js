@@ -21,34 +21,24 @@ export default async function handler(req, res) {
   const prompt = `${modePrompts[mode]}${langNote}\n\nHere is the document:\n\n${text}\n\n---\nAfter your explanation, on a new line write exactly:\nREADABILITY_SCORE: [a number 1-10 for how complex the original was]\nCOMPLEXITY_WORDS: [count of jargon/complex words you simplified]\nKEY_POINTS: [number of key points covered]`;
 
   try {
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        "HTTP-Referer": "https://legible.vercel.app",
-        "X-Title": "Legible"
+        "x-api-key": process.env.ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01"
       },
       body: JSON.stringify({
-        model: "mistralai/mistral-7b-instruct:free",
+        model: "claude-haiku-4-5-20251001",
         max_tokens: 1000,
-        messages: [
-          {
-            role: "system",
-            content: "You are Legible, a helpful assistant that explains complex documents in plain language. You are clear, friendly, and accurate."
-          },
-          {
-            role: "user",
-            content: prompt
-          }
-        ]
+        messages: [{ role: "user", content: prompt }]
       })
     });
 
     const data = await response.json();
     if (data.error) return res.status(500).json({ error: data.error.message });
 
-    const full = data.choices?.[0]?.message?.content || '';
+    const full = data.content.map(i => i.text || '').join('');
     res.status(200).json({ result: full });
 
   } catch (e) {
