@@ -1,0 +1,12 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" fill="#0A3528" rx="80"/>
+  <circle cx="256" cy="180" r="80" fill="#1A6B52"/>
+  <circle cx="256" cy="180" r="58" fill="#0A3528"/>
+  <rect x="216" y="144" width="80" height="11" rx="5.5" fill="#2EA87E"/>
+  <rect x="216" y="168" width="80" height="11" rx="5.5" fill="#2EA87E"/>
+  <rect x="216" y="192" width="56" height="11" rx="5.5" fill="#9FE1CB"/>
+  <rect x="216" y="213" width="40" height="8" rx="4" fill="#9FE1CB" opacity="0.5"/>
+  <text x="256" y="340" text-anchor="middle" font-family="Georgia,serif" font-size="88" font-weight="700" fill="#FFFFFF" letter-spacing="-2">legible</text>
+  <rect x="60" y="370" width="392" height="1.5" fill="#1A6B52" opacity="0.6"/>
+  <text x="256" y="410" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" fill="#9FE1CB" letter-spacing="2">PLAIN LANGUAGE</text>
+</svg>
