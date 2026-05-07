@@ -1,243 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Legible – Plain Language Explainer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Epilogue:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{
-    --bg:#F9F6F0;--card:#FFFFFF;--text:#1A1A1A;--muted:#6B6B6B;
-    --accent:#1A3C34;--accent-light:#E8F2EE;--accent-mid:#2E6B5A;
-    --border:#E2DDD6;--pill-bg:#F0EBE3;
-    --serif:'Instrument Serif',Georgia,serif;
-    --sans:'DM Sans',sans-serif;
-  }
-  body{background:var(--bg);font-family:var(--sans);color:var(--text);min-height:100vh;}
-
-  .hero{padding:3rem 2rem 2rem;text-align:center;border-bottom:1px solid var(--border);background:var(--card);}
-  .hero-badge{display:inline-block;background:var(--accent-light);color:var(--accent-mid);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;border-radius:100px;margin-bottom:1.2rem;}
-  .hero h1{font-family:var(--serif);font-size:clamp(2.2rem,5vw,3.4rem);font-weight:400;line-height:1.15;margin-bottom:.75rem;}
-  .hero h1 em{font-style:italic;color:var(--accent-mid);}
-  .hero p{font-size:1rem;color:var(--muted);max-width:480px;margin:0 auto 2rem;line-height:1.6;}
-
-  .pill-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:2rem;}
-  .pill{background:var(--pill-bg);border:1px solid var(--border);border-radius:100px;padding:6px 16px;font-size:13px;color:var(--muted);cursor:pointer;transition:all .2s;font-family:var(--sans);}
-  .pill:hover,.pill.active{background:var(--accent);color:#fff;border-color:var(--accent);}
-
-  .main{padding:2rem;max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:1.5rem;}
-
-  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;}
-  .card-label{font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;}
-  textarea{width:100%;min-height:160px;border:1px solid var(--border);border-radius:10px;padding:1rem;font-size:14px;font-family:var(--sans);color:var(--text);background:var(--bg);resize:vertical;outline:none;transition:border .2s;line-height:1.7;}
-  textarea:focus{border-color:var(--accent-mid);}
-  textarea::placeholder{color:#B0A99F;}
-
-  .row{display:flex;gap:12px;align-items:center;margin-top:1rem;flex-wrap:wrap;}
-  select{flex:1;min-width:160px;border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;font-family:var(--sans);color:var(--text);background:var(--card);outline:none;cursor:pointer;}
-
-  .btn{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:11px 28px;font-size:14px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;white-space:nowrap;}
-  .btn:hover{background:var(--accent-mid);}
-  .btn:disabled{opacity:.5;cursor:not-allowed;}
-  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:10px;padding:10px 18px;font-size:13px;font-family:var(--sans);cursor:pointer;transition:all .2s;}
-  .btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
-
-  .output-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:none;}
-  .output-card.visible{display:block;}
-  .output-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--accent-light);}
-  .output-header-left{display:flex;align-items:center;gap:10px;}
-  .output-dot{width:10px;height:10px;border-radius:50%;background:var(--accent-mid);}
-  .output-title{font-size:13px;font-weight:500;color:var(--accent);letter-spacing:.03em;}
-  .output-body{padding:1.5rem;font-size:15px;line-height:1.8;color:var(--text);white-space:pre-wrap;font-family:var(--sans);}
-  .output-body.loading{color:var(--muted);font-style:italic;display:flex;align-items:center;gap:10px;}
-  .dot-loader{display:flex;gap:4px;}
-  .dot-loader span{width:6px;height:6px;border-radius:50%;background:var(--accent-mid);animation:bounce .9s infinite;}
-  .dot-loader span:nth-child(2){animation-delay:.2s;}
-  .dot-loader span:nth-child(3){animation-delay:.4s;}
-  @keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
-
-  .score-row{display:flex;gap:10px;flex-wrap:wrap;padding:1rem 1.5rem;border-top:1px solid var(--border);}
-  .score-badge{display:flex;flex-direction:column;align-items:center;background:var(--pill-bg);border:1px solid var(--border);border-radius:10px;padding:8px 16px;min-width:100px;}
-  .score-val{font-size:20px;font-weight:500;color:var(--accent);}
-  .score-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
-
-  .examples-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:1rem;}
-  .example-tile{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;cursor:pointer;transition:all .2s;}
-  .example-tile:hover{border-color:var(--accent-mid);background:var(--accent-light);}
-  .example-tile h4{font-size:13px;font-weight:500;margin-bottom:4px;}
-  .example-tile p{font-size:12px;color:var(--muted);line-height:1.5;}
-
-  .copy-btn{background:transparent;border:1px solid var(--border);border-radius:7px;padding:5px 12px;font-size:12px;font-family:var(--sans);color:var(--muted);cursor:pointer;transition:all .2s;}
-  .copy-btn:hover{border-color:var(--accent);color:var(--accent);}
-  .char-count{font-size:12px;color:var(--muted);margin-top:6px;text-align:right;}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0D0D0D;--ink2:#3A3A3A;--ink3:#7A7A7A;
+  --paper:#F7F4EE;--card:#FFFFFF;--border:#E8E3DA;
+  --g1:#0A3528;--g2:#1A6B52;--g3:#2EA87E;
+  --accent:#1A6B52;--accent-light:#E1F5EE;
+  --serif:'Syne',sans-serif;--body:'Epilogue',sans-serif;
+  --r:14px;--r2:20px;
+}
+body{background:var(--paper);font-family:var(--body);color:var(--ink);min-height:100vh;overflow-x:hidden;}
+nav{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:1.25rem 2.5rem;border-bottom:1px solid var(--border);background:rgba(247,244,238,0.9);backdrop-filter:blur(12px);}
+.logo{font-family:var(--serif);font-size:1.4rem;font-weight:800;color:var(--g1);letter-spacing:-.02em;}
+.logo span{color:var(--g2);}
+.nav-tag{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);background:var(--border);padding:4px 12px;border-radius:100px;}
+.hero{padding:5rem 2.5rem 3rem;max-width:900px;margin:0 auto;text-align:center;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--accent-light);border:1px solid #9FE1CB;border-radius:100px;padding:6px 16px;font-size:12px;font-weight:500;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;margin-bottom:2rem;animation:fadeUp .6s ease both;}
+.hero-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--g3);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.4);}}
+h1{font-family:var(--serif);font-size:clamp(2.8rem,6vw,4.5rem);font-weight:800;line-height:1.05;letter-spacing:-.03em;color:var(--ink);margin-bottom:1.25rem;animation:fadeUp .7s .1s ease both;}
+h1 em{font-style:italic;font-weight:400;color:var(--g2);}
+.hero-sub{font-size:1.05rem;color:var(--ink2);line-height:1.7;max-width:540px;margin:0 auto 2.5rem;font-weight:300;animation:fadeUp .7s .2s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.modes{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:2.5rem;animation:fadeUp .7s .3s ease both;}
+.mode-btn{display:flex;align-items:center;gap:6px;padding:8px 18px;border-radius:100px;border:1.5px solid var(--border);background:var(--card);font-size:13px;font-weight:500;color:var(--ink2);cursor:pointer;transition:all .2s;font-family:var(--body);}
+.mode-btn:hover{border-color:var(--g2);color:var(--g1);}
+.mode-btn.active{background:var(--g1);border-color:var(--g1);color:#fff;}
+.main{max-width:860px;margin:0 auto;padding:0 2rem 4rem;animation:fadeUp .7s .4s ease both;}
+.input-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r2);overflow:hidden;box-shadow:0 4px 40px rgba(0,0,0,.06);}
+.input-top{padding:1.5rem 1.5rem 0;}
+.input-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:.75rem;}
+textarea{width:100%;min-height:180px;border:1.5px solid var(--border);border-radius:var(--r);padding:1rem 1.25rem;font-size:14.5px;font-family:var(--body);color:var(--ink);background:var(--paper);resize:vertical;outline:none;transition:border .2s,box-shadow .2s;line-height:1.75;font-weight:300;}
+textarea:focus{border-color:var(--g2);box-shadow:0 0 0 3px rgba(46,168,126,.1);}
+textarea::placeholder{color:#B8B0A4;}
+.char-count{font-size:11.5px;color:var(--ink3);margin-top:.4rem;text-align:right;padding-bottom:.75rem;}
+.input-bottom{display:flex;align-items:center;gap:10px;padding:1rem 1.5rem;border-top:1.5px solid var(--border);background:rgba(247,244,238,.5);flex-wrap:wrap;}
+select{flex:1;min-width:160px;border:1.5px solid var(--border);border-radius:10px;padding:9px 14px;font-size:13px;font-family:var(--body);color:var(--ink);background:var(--card);outline:none;cursor:pointer;}
+.btn-ghost{background:transparent;color:var(--ink2);border:1.5px solid var(--border);border-radius:10px;padding:9px 18px;font-size:13px;font-family:var(--body);cursor:pointer;transition:all .2s;font-weight:500;}
+.btn-ghost:hover{border-color:var(--g2);color:var(--g1);}
+.btn-main{background:var(--g1);color:#fff;border:none;border-radius:10px;padding:10px 28px;font-size:14px;font-weight:600;font-family:var(--body);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px;}
+.btn-main:hover{background:var(--g2);transform:translateY(-1px);box-shadow:0 6px 24px rgba(10,53,40,.25);}
+.btn-main:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
+.examples{margin-top:1.5rem;}
+.examples-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:.75rem;}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;}
+.tile{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:1rem 1.1rem;cursor:pointer;transition:all .2s;}
+.tile:hover{border-color:var(--g2);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,.07);}
+.tile-icon{font-size:20px;margin-bottom:.4rem;}
+.tile h4{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px;font-family:var(--serif);}
+.tile p{font-size:11.5px;color:var(--ink3);line-height:1.45;}
+.output-wrap{margin-top:1.5rem;display:none;}
+.output-wrap.visible{display:block;animation:fadeUp .5s ease both;}
+.output-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r2);overflow:hidden;box-shadow:0 4px 40px rgba(0,0,0,.06);}
+.output-header{padding:1rem 1.5rem;border-bottom:1.5px solid var(--border);background:var(--g1);display:flex;align-items:center;justify-content:space-between;}
+.output-header-left{display:flex;align-items:center;gap:10px;}
+.output-badge{width:8px;height:8px;border-radius:50%;background:#2EA87E;box-shadow:0 0 0 3px rgba(46,168,126,.3);animation:pulse 2s infinite;}
+.output-title{font-size:12px;font-weight:600;color:#fff;letter-spacing:.08em;text-transform:uppercase;}
+.copy-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:7px;padding:5px 14px;font-size:12px;font-family:var(--body);color:#fff;cursor:pointer;transition:all .2s;font-weight:500;}
+.copy-btn:hover{background:rgba(255,255,255,.22);}
+.output-body{padding:1.75rem;font-size:15px;line-height:1.9;color:var(--ink2);white-space:pre-wrap;font-family:var(--body);font-weight:300;}
+.output-body.loading{display:flex;align-items:center;gap:12px;color:var(--ink3);font-style:italic;}
+.dots{display:flex;gap:5px;}
+.dots span{width:7px;height:7px;border-radius:50%;background:var(--g2);animation:bounce .9s infinite;}
+.dots span:nth-child(2){animation-delay:.2s;}
+.dots span:nth-child(3){animation-delay:.4s;}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+.scores{display:flex;gap:10px;flex-wrap:wrap;padding:1rem 1.5rem;border-top:1.5px solid var(--border);background:var(--paper);}
+.score{display:flex;flex-direction:column;align-items:center;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:10px 20px;min-width:110px;}
+.score-val{font-size:22px;font-weight:700;color:var(--g1);font-family:var(--serif);}
+.score-lbl{font-size:10.5px;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-top:2px;}
+footer{text-align:center;padding:2rem;font-size:12px;color:var(--ink3);letter-spacing:.06em;border-top:1px solid var(--border);}
 </style>
 </head>
 <body>
 
+<nav>
+  <div class="logo">legible<span>.</span></div>
+  <div class="nav-tag">✦ AI-Powered · Free to use</div>
+</nav>
+
 <div class="hero">
-  <div class="hero-badge">✦ Powered by Claude AI</div>
-  <h1>Understand <em>any</em> document,<br>in plain language.</h1>
-  <p>Paste confusing legal, medical, or government text — get a clear, simple explanation in seconds.</p>
-  <div class="pill-row">
-    <button class="pill active" onclick="setMode(this,'explain')">📄 Explain it</button>
-    <button class="pill" onclick="setMode(this,'summarize')">✂️ Summarize</button>
-    <button class="pill" onclick="setMode(this,'rights')">⚖️ What are my rights?</button>
-    <button class="pill" onclick="setMode(this,'risks')">⚠️ What are the risks?</button>
-    <button class="pill" onclick="setMode(this,'eli5')">🧒 Explain like I'm 12</button>
+  <div class="hero-eyebrow">Plain language for everyone</div>
+  <h1>Any document,<br><em>instantly understood.</em></h1>
+  <p class="hero-sub">Paste confusing legal, medical, or government text and get a clear, simple explanation — in your language, in seconds.</p>
+  <div class="modes" id="modes">
+    <button class="mode-btn active" onclick="setMode(this,'explain')">📄 Explain it</button>
+    <button class="mode-btn" onclick="setMode(this,'summarize')">✂️ Summarize</button>
+    <button class="mode-btn" onclick="setMode(this,'rights')">⚖️ My rights</button>
+    <button class="mode-btn" onclick="setMode(this,'risks')">⚠️ Risks</button>
+    <button class="mode-btn" onclick="setMode(this,'eli5')">🧒 ELI5</button>
   </div>
 </div>
 
 <div class="main">
-  <div class="card">
-    <div class="card-label">📋 Paste your document or text</div>
-    <textarea id="inputText" placeholder="Paste any confusing text here — tenancy agreement, medical report, terms & conditions, government letter…"></textarea>
-    <div class="char-count" id="charCount">0 characters</div>
-    <div class="row">
+  <div class="input-card">
+    <div class="input-top">
+      <div class="input-label">📋 Paste your document</div>
+      <textarea id="inputText" placeholder="Paste any confusing text here — tenancy agreement, medical report, terms & conditions, government letter…"></textarea>
+      <div class="char-count" id="charCount">0 characters</div>
+    </div>
+    <div class="input-bottom">
       <select id="langSelect">
-        <option value="english">Output: English</option>
-        <option value="Nigerian Pidgin">Output: Nigerian Pidgin</option>
-        <option value="Yoruba">Output: Yoruba (simple)</option>
-        <option value="Igbo">Output: Igbo (simple)</option>
-        <option value="Hausa">Output: Hausa (simple)</option>
+        <option value="english">🌍 Output: English</option>
+        <option value="Nigerian Pidgin">🇳🇬 Nigerian Pidgin</option>
+        <option value="Yoruba">Yoruba (simple)</option>
+        <option value="Igbo">Igbo (simple)</option>
+        <option value="Hausa">Hausa (simple)</option>
+        <option value="Hindi">🇮🇳 Hindi</option>
+        <option value="Spanish">🇪🇸 Spanish</option>
+        <option value="French">🇫🇷 French</option>
       </select>
       <button class="btn-ghost" onclick="loadExample()">Load example</button>
-      <button class="btn" id="explainBtn" onclick="explain()">
+      <button class="btn-main" id="explainBtn" onclick="explain()">
         <span id="btnText">Explain this</span>
         <span>→</span>
       </button>
     </div>
   </div>
 
-  <div id="exampleSection">
-    <div class="card-label" style="margin-bottom:.5rem">💡 Try an example</div>
-    <div class="examples-grid">
-      <div class="example-tile" onclick="useExample('tenancy')"><h4>🏠 Tenancy Agreement</h4><p>Understand what you're signing before moving in</p></div>
-      <div class="example-tile" onclick="useExample('medical')"><h4>🩺 Medical Report</h4><p>Decode doctor's notes and diagnoses</p></div>
-      <div class="example-tile" onclick="useExample('terms')"><h4>📱 Terms & Conditions</h4><p>Find out what an app can do with your data</p></div>
-      <div class="example-tile" onclick="useExample('government')"><h4>🏛️ Government Letter</h4><p>Understand official notices without a lawyer</p></div>
+  <div class="examples" id="exampleSection">
+    <div class="examples-label">💡 Try an example</div>
+    <div class="tiles">
+      <div class="tile" onclick="useExample('tenancy')"><div class="tile-icon">🏠</div><h4>Tenancy Agreement</h4><p>Understand what you're signing before moving in</p></div>
+      <div class="tile" onclick="useExample('medical')"><div class="tile-icon">🩺</div><h4>Medical Report</h4><p>Decode doctor's notes and diagnoses</p></div>
+      <div class="tile" onclick="useExample('terms')"><div class="tile-icon">📱</div><h4>Terms & Conditions</h4><p>Find out what an app can do with your data</p></div>
+      <div class="tile" onclick="useExample('government')"><div class="tile-icon">🏛️</div><h4>Government Letter</h4><p>Understand official notices without a lawyer</p></div>
     </div>
   </div>
 
-  <div class="output-card" id="outputCard">
-    <div class="output-header">
-      <div class="output-header-left">
-        <div class="output-dot"></div>
-        <div class="output-title" id="outputLabel">Plain Language Explanation</div>
+  <div class="output-wrap" id="outputWrap">
+    <div class="output-card">
+      <div class="output-header">
+        <div class="output-header-left">
+          <div class="output-badge"></div>
+          <div class="output-title" id="outputLabel">Explanation</div>
+        </div>
+        <button class="copy-btn" onclick="copyOutput()">Copy</button>
       </div>
-      <button class="copy-btn" onclick="copyOutput()">Copy</button>
+      <div class="output-body" id="outputBody"></div>
+      <div class="scores" id="scoresRow" style="display:none"></div>
     </div>
-    <div class="output-body" id="outputBody"></div>
-    <div class="score-row" id="scoreRow" style="display:none"></div>
   </div>
 </div>
 
+<footer>Legible · Built for Next Byte Hacks V2 · 2026</footer>
+
 <script>
-let currentMode = 'explain';
-
-const examples = {
-  tenancy: `TENANCY AGREEMENT\n\nThe Tenant hereby covenants with the Landlord that the Tenant will not without the prior written consent of the Landlord (such consent not to be unreasonably withheld) make or permit to be made any alterations or additions to the demised premises or any part thereof and in particular (but without limiting the generality of the foregoing) will not erect any new buildings or structures on the demised premises.`,
-  medical: `CLINICAL FINDINGS: Patient presents with pyrexia of unknown origin, bilateral cervical lymphadenopathy, and hepatosplenomegaly. Haematological investigations reveal leucocytosis with neutrophilia. Chest radiograph demonstrates bilateral hilar lymphadenopathy. Differential diagnoses include infectious mononucleosis, lymphoma, and sarcoidosis. Recommend urgent bone marrow trephine biopsy and CT thorax/abdomen/pelvis.`,
-  terms: `By accessing or using our Service, you agree to be bound by these Terms. You grant us a non-exclusive, worldwide, royalty-free, sublicensable, and transferable license to use, reproduce, modify, adapt, publish, translate, create derivative works from, distribute, publicly perform, and publicly display your Content in connection with operating and providing the Service and Content to you and to other Users.`,
-  government: `NOTICE OF ASSESSMENT — INCOME TAX ACT\n\nPursuant to Section 68 of the Income Tax Act, this constitutes formal notice of your tax liability for the assessment period. The Commissioner of Taxation has made a determination that the taxable income as assessed is subject to primary tax and surcharge levies as stipulated herein. Failure to remit payment or lodge an objection within the prescribed 60-day period may result in enforcement action including garnishment of wages and/or seizure of assets.`
+let currentMode='explain';
+const examples={
+  tenancy:`TENANCY AGREEMENT\n\nThe Tenant hereby covenants with the Landlord that the Tenant will not without the prior written consent of the Landlord (such consent not to be unreasonably withheld) make or permit to be made any alterations or additions to the demised premises or any part thereof and in particular (but without limiting the generality of the foregoing) will not erect any new buildings or structures on the demised premises.`,
+  medical:`CLINICAL FINDINGS: Patient presents with pyrexia of unknown origin, bilateral cervical lymphadenopathy, and hepatosplenomegaly. Haematological investigations reveal leucocytosis with neutrophilia. Chest radiograph demonstrates bilateral hilar lymphadenopathy. Differential diagnoses include infectious mononucleosis, lymphoma, and sarcoidosis. Recommend urgent bone marrow trephine biopsy and CT thorax/abdomen/pelvis.`,
+  terms:`By accessing or using our Service, you agree to be bound by these Terms. You grant us a non-exclusive, worldwide, royalty-free, sublicensable, and transferable license to use, reproduce, modify, adapt, publish, translate, create derivative works from, distribute, publicly perform, and publicly display your Content in connection with operating and providing the Service and Content to you and to other Users.`,
+  government:`NOTICE OF ASSESSMENT — INCOME TAX ACT\n\nPursuant to Section 68 of the Income Tax Act, this constitutes formal notice of your tax liability for the assessment period. The Commissioner of Taxation has made a determination that the taxable income as assessed is subject to primary tax and surcharge levies as stipulated herein. Failure to remit payment or lodge an objection within the prescribed 60-day period may result in enforcement action including garnishment of wages and/or seizure of assets.`
 };
-
-const modePrompts = { explain:"explain", summarize:"summarize", rights:"rights", risks:"risks", eli5:"eli5" };
-const modeLabels = { explain:"Plain Language Explanation", summarize:"Summary", rights:"Your Rights", risks:"Key Risks & Obligations", eli5:"Simple Explanation" };
-
-function setMode(btn, mode) {
-  currentMode = mode;
-  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+const modeLabels={explain:'Plain Language Explanation',summarize:'Summary',rights:'Your Rights',risks:'Key Risks',eli5:'Simple Explanation'};
+function setMode(btn,mode){
+  currentMode=mode;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('btnText').textContent = btn.textContent.slice(2).trim();
+  document.getElementById('btnText').textContent=btn.textContent.trim().slice(2).trim();
 }
-
-function useExample(key) {
-  document.getElementById('inputText').value = examples[key];
+function useExample(k){
+  document.getElementById('inputText').value=examples[k];
   updateCount();
-  document.getElementById('exampleSection').style.display = 'none';
+  document.getElementById('exampleSection').style.opacity='.5';
 }
-
-function loadExample() {
-  const keys = Object.keys(examples);
-  useExample(keys[Math.floor(Math.random() * keys.length)]);
+function loadExample(){
+  const keys=Object.keys(examples);
+  useExample(keys[Math.floor(Math.random()*keys.length)]);
 }
-
-function updateCount() {
-  document.getElementById('charCount').textContent = document.getElementById('inputText').value.length.toLocaleString() + ' characters';
+function updateCount(){
+  document.getElementById('charCount').textContent=document.getElementById('inputText').value.length.toLocaleString()+' characters';
 }
-document.getElementById('inputText').addEventListener('input', updateCount);
-
-function copyOutput() {
-  navigator.clipboard.writeText(document.getElementById('outputBody').textContent).then(() => {
-    const btn = document.querySelector('.copy-btn');
-    btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = 'Copy', 2000);
+document.getElementById('inputText').addEventListener('input',updateCount);
+function copyOutput(){
+  navigator.clipboard.writeText(document.getElementById('outputBody').textContent).then(()=>{
+    const b=document.querySelector('.copy-btn');b.textContent='Copied ✓';
+    setTimeout(()=>b.textContent='Copy',2000);
   });
 }
-
-async function explain() {
-  const text = document.getElementById('inputText').value.trim();
-  if (!text) {
-    document.getElementById('inputText').style.borderColor = '#E24B4A';
-    setTimeout(() => document.getElementById('inputText').style.borderColor = '', 1500);
-    return;
-  }
-  const btn = document.getElementById('explainBtn');
-  btn.disabled = true;
-
-  const outputCard = document.getElementById('outputCard');
-  const outputBody = document.getElementById('outputBody');
-  const scoreRow = document.getElementById('scoreRow');
-
-  document.getElementById('outputLabel').textContent = modeLabels[currentMode];
-  outputCard.classList.add('visible');
-  outputCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  scoreRow.style.display = 'none';
-  outputBody.className = 'output-body loading';
-  outputBody.innerHTML = '<div class="dot-loader"><span></span><span></span><span></span></div>&nbsp; Analyzing your document…';
-
-  try {
-    const res = await fetch('/api/explain', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        text,
-        mode: currentMode,
-        language: document.getElementById('langSelect').value
-      })
-    });
-
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
-
-    const full = data.result;
-    const scoreMatch = full.match(/READABILITY_SCORE:\s*(\d+)/);
-    const wordsMatch = full.match(/COMPLEXITY_WORDS:\s*(\d+)/);
-    const pointsMatch = full.match(/KEY_POINTS:\s*(\d+)/);
-
-    const clean = full
-      .replace(/READABILITY_SCORE:.*$/m, '')
-      .replace(/COMPLEXITY_WORDS:.*$/m, '')
-      .replace(/KEY_POINTS:.*$/m, '')
-      .trim();
-
-    outputBody.className = 'output-body';
-    outputBody.textContent = clean;
-
-    if (scoreMatch || wordsMatch || pointsMatch) {
-      scoreRow.style.display = 'flex';
-      scoreRow.innerHTML = '';
-      if (scoreMatch) scoreRow.innerHTML += `<div class="score-badge"><div class="score-val">${scoreMatch[1]}/10</div><div class="score-lbl">Complexity</div></div>`;
-      if (wordsMatch) scoreRow.innerHTML += `<div class="score-badge"><div class="score-val">${wordsMatch[1]}</div><div class="score-lbl">Terms simplified</div></div>`;
-      if (pointsMatch) scoreRow.innerHTML += `<div class="score-badge"><div class="score-val">${pointsMatch[1]}</div><div class="score-lbl">Key points</div></div>`;
+async function explain(){
+  const text=document.getElementById('inputText').value.trim();
+  if(!text){document.getElementById('inputText').style.borderColor='#E24B4A';setTimeout(()=>document.getElementById('inputText').style.borderColor='',1500);return;}
+  const btn=document.getElementById('explainBtn');btn.disabled=true;
+  const wrap=document.getElementById('outputWrap');
+  const body=document.getElementById('outputBody');
+  const scoresRow=document.getElementById('scoresRow');
+  document.getElementById('outputLabel').textContent=modeLabels[currentMode];
+  wrap.classList.add('visible');wrap.scrollIntoView({behavior:'smooth',block:'nearest'});
+  scoresRow.style.display='none';
+  body.className='output-body loading';
+  body.innerHTML='<div class="dots"><span></span><span></span><span></span></div>&nbsp; Analyzing your document…';
+  const lang=document.getElementById('langSelect').value;
+  try{
+    const res=await fetch('/api/explain',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,mode:currentMode,language:lang})});
+    const data=await res.json();
+    if(data.error)throw new Error(data.error);
+    const full=data.result;
+    const sM=full.match(/READABILITY_SCORE:\s*(\d+)/);
+    const wM=full.match(/COMPLEXITY_WORDS:\s*(\d+)/);
+    const pM=full.match(/KEY_POINTS:\s*(\d+)/);
+    const clean=full.replace(/READABILITY_SCORE:.*$/m,'').replace(/COMPLEXITY_WORDS:.*$/m,'').replace(/KEY_POINTS:.*$/m,'').trim();
+    body.className='output-body';body.textContent=clean;
+    if(sM||wM||pM){
+      scoresRow.style.display='flex';scoresRow.innerHTML='';
+      if(sM)scoresRow.innerHTML+=`<div class="score"><div class="score-val">${sM[1]}/10</div><div class="score-lbl">Complexity</div></div>`;
+      if(wM)scoresRow.innerHTML+=`<div class="score"><div class="score-val">${wM[1]}</div><div class="score-lbl">Terms simplified</div></div>`;
+      if(pM)scoresRow.innerHTML+=`<div class="score"><div class="score-val">${pM[1]}</div><div class="score-lbl">Key points</div></div>`;
     }
-  } catch (e) {
-    outputBody.className = 'output-body';
-    outputBody.textContent = 'Something went wrong: ' + e.message;
-  }
-  btn.disabled = false;
+  }catch(e){body.className='output-body';body.textContent='Something went wrong: '+e.message;}
+  btn.disabled=false;
 }
 </script>
 </body>
